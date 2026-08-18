@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,109 +9,283 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#05020a">
 
-<!-- PWA Web Manifest -->
+<!-- PWA Manifest -->
 <link rel="manifest" href="./manifest.json">
 
 <title>Core Shift</title>
 
 <style>
   * { box-sizing: border-box; }
+
   html, body {
-    margin: 0; padding: 0; overflow: hidden; background: #05020a;
-    height: 100%; width: 100%; position: fixed; inset: 0;
-    touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #05020a;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    inset: 0;
+    touch-action: none;
+    overscroll-behavior: none;
+    -webkit-user-select: none;
+    user-select: none;
     -webkit-touch-callout: none;
   }
-  #gameCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; }
 
-  .hud-font { font-family: 'Courier New', Courier, monospace; letter-spacing: 1px; }
+  #gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .hud-font {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 1px;
+  }
 
   #topBar {
-    position: absolute; top: calc(env(safe-area-inset-top, 0px) + 12px); left: 0; right: 0;
-    display: flex; justify-content: space-between; align-items: flex-start;
-    padding: 0 18px; z-index: 10; pointer-events: none;
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0 18px;
+    z-index: 10;
+    pointer-events: none;
   }
-  #livesRow { display: flex; gap: 6px; margin-top: 4px; }
+
+  #livesRow {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
   .life-pip {
-    width: 14px; height: 14px; transform: rotate(45deg);
-    background: #ff2ea6; box-shadow: 0 0 8px #ff2ea6, 0 0 16px #ff2ea6;
+    width: 14px;
+    height: 14px;
+    transform: rotate(45deg);
+    background: #ff2ea6;
+    box-shadow: 0 0 8px #ff2ea6, 0 0 16px #ff2ea6;
     transition: opacity 0.2s, transform 0.2s;
   }
-  .life-pip.dead { background: #2a1030; box-shadow: none; opacity: 0.35; }
 
-  #scoreBlock { text-align: right; color: #eaf6ff; }
-  #scoreLabel { font-size: 11px; opacity: 0.6; }
-  #scoreVal { font-size: 30px; font-weight: 700; color: #7af4ff; text-shadow: 0 0 10px rgba(122,244,255,0.7); }
-  #highVal { font-size: 11px; opacity: 0.55; margin-top: -2px; }
+  .life-pip.dead {
+    background: #2a1030;
+    box-shadow: none;
+    opacity: 0.35;
+  }
+
+  #scoreBlock {
+    text-align: right;
+    color: #eaf6ff;
+  }
+
+  #scoreLabel {
+    font-size: 11px;
+    opacity: 0.6;
+  }
+
+  #scoreVal {
+    font-size: 30px;
+    font-weight: 700;
+    color: #7af4ff;
+    text-shadow: 0 0 10px rgba(122,244,255,0.7);
+  }
+
+  #highVal {
+    font-size: 11px;
+    opacity: 0.55;
+    margin-top: -2px;
+  }
 
   #meterWrap {
-    position: absolute; top: calc(env(safe-area-inset-top, 0px) + 14px); left: 50%; transform: translateX(-50%);
-    width: min(360px, 52vw); z-index: 10; pointer-events: none; text-align: center;
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(360px, 52vw);
+    z-index: 10;
+    pointer-events: none;
+    text-align: center;
   }
-  #meterLabel { font-size: 10px; color: #ffd23f; opacity: 0.85; margin-bottom: 3px; font-weight: 700; }
+
+  #meterLabel {
+    font-size: 10px;
+    color: #ffd23f;
+    opacity: 0.85;
+    margin-bottom: 3px;
+    font-weight: 700;
+  }
+
   #meterTrack {
-    width: 100%; height: 12px; border-radius: 8px; background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15); overflow: hidden; position: relative;
+    width: 100%;
+    height: 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    overflow: hidden;
+    position: relative;
   }
+
   #meterFill {
-    height: 100%; width: 0%; border-radius: 8px;
+    height: 100%;
+    width: 0%;
+    border-radius: 8px;
     background: linear-gradient(90deg, #ff2ea6, #ffd23f, #7af4ff);
     box-shadow: 0 0 12px rgba(255,210,63,0.8);
     transition: width 0.12s linear;
   }
-  #meterWrap.overdrive #meterFill { animation: pulseGlow 0.35s infinite alternate; }
-  @keyframes pulseGlow { from { filter: brightness(1); } to { filter: brightness(1.6); } }
+
+  #meterWrap.overdrive #meterFill {
+    animation: pulseGlow 0.35s infinite alternate;
+  }
+
+  @keyframes pulseGlow {
+    from { filter: brightness(1); }
+    to { filter: brightness(1.6); }
+  }
 
   #modeBar {
-    position: absolute; top: calc(env(safe-area-inset-top, 0px) + 46px); left: 50%; transform: translateX(-50%);
-    z-index: 10; pointer-events: none; text-align: center; font-size: 12px;
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 46px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    pointer-events: none;
+    text-align: center;
+    font-size: 12px;
   }
-  #modeName { font-weight: 700; letter-spacing: 3px; }
-  #modeTimer { opacity: 0.6; font-size: 11px; }
+
+  #modeName {
+    font-weight: 700;
+    letter-spacing: 3px;
+  }
+
+  #modeTimer {
+    opacity: 0.6;
+    font-size: 11px;
+  }
 
   #announcement {
-    position: absolute; top: 42%; left: 0; right: 0; text-align: center; z-index: 15;
-    font-size: clamp(28px, 8vw, 56px); font-weight: 800; letter-spacing: 4px;
-    opacity: 0; pointer-events: none; text-transform: uppercase;
+    position: absolute;
+    top: 42%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 15;
+    font-size: clamp(28px, 8vw, 56px);
+    font-weight: 800;
+    letter-spacing: 4px;
+    opacity: 0;
+    pointer-events: none;
+    text-transform: uppercase;
     text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
   }
 
   #overlay {
-    position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; text-align: center; color: #eaf6ff;
-    background: rgba(4,2,10,0.9); padding: 0 24px;
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #eaf6ff;
+    background: rgba(4,2,10,0.9);
+    padding: 0 24px;
   }
+
   #overlay h1 {
-    font-size: clamp(34px, 9vw, 54px); margin: 0 0 10px 0; letter-spacing: 3px;
+    font-size: clamp(34px, 9vw, 54px);
+    margin: 0 0 10px 0;
+    letter-spacing: 3px;
     background: linear-gradient(90deg, #ff2ea6, #ffd23f, #7af4ff);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-  #overlay p, #overlay .stat { font-size: 14px; opacity: 0.85; max-width: 440px; line-height: 1.6; margin: 4px 0 8px; }
-  #overlay .modes-list { text-align: left; font-size: 13px; opacity: 0.85; margin: 10px 0 22px; }
-  #overlay .modes-list div { margin: 4px 0; }
-  #overlay .modes-list b { color: #ffd23f; }
+
+  #overlay p,
+  #overlay .stat {
+    font-size: 14px;
+    opacity: 0.85;
+    max-width: 440px;
+    line-height: 1.6;
+    margin: 4px 0 8px;
+  }
+
+  #overlay .modes-list {
+    text-align: left;
+    font-size: 13px;
+    opacity: 0.85;
+    margin: 10px 0 22px;
+  }
+
+  #overlay .modes-list div {
+    margin: 4px 0;
+  }
+
+  #overlay .modes-list b {
+    color: #ffd23f;
+  }
+
   #playBtn {
-    padding: 16px 46px; font-size: 18px; font-weight: 700; border-radius: 34px; letter-spacing: 1px;
-    border: none; cursor: pointer; background: linear-gradient(90deg, #ff2ea6, #7367f0);
-    color: white; box-shadow: 0 4px 24px rgba(255,46,166,0.5); -webkit-tap-highlight-color: transparent;
+    padding: 16px 46px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 34px;
+    letter-spacing: 1px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(90deg, #ff2ea6, #7367f0);
+    color: white;
+    box-shadow: 0 4px 24px rgba(255,46,166,0.5);
+    -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
   }
-  #playBtn:active { transform: scale(0.96); }
-  #finalScore { font-size: 22px; color: #ffd23f; font-weight: 700; margin: 6px 0 18px; }
+
+  #playBtn:active {
+    transform: scale(0.96);
+  }
+
+  #finalScore {
+    font-size: 22px;
+    color: #ffd23f;
+    font-weight: 700;
+    margin: 6px 0 18px;
+  }
+
   #instructions {
-    position: absolute; bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); left: 0; right: 0;
-    text-align: center; color: #cfe0ff; font-size: 12px; opacity: 0.55; z-index: 10; pointer-events: none;
+    position: absolute;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #cfe0ff;
+    font-size: 12px;
+    opacity: 0.55;
+    z-index: 10;
+    pointer-events: none;
   }
 </style>
 </head>
 
 <body>
+
 <canvas id="gameCanvas"></canvas>
 
 <div id="topBar">
   <div>
     <div id="livesRow"></div>
   </div>
+
   <div id="scoreBlock">
     <div id="scoreLabel">SCORE</div>
     <div id="scoreVal">0</div>
@@ -122,7 +295,9 @@
 
 <div id="meterWrap">
   <div id="meterLabel">ADDICTION</div>
-  <div id="meterTrack"><div id="meterFill"></div></div>
+  <div id="meterTrack">
+    <div id="meterFill"></div>
+  </div>
 </div>
 
 <div id="modeBar">
@@ -132,55 +307,127 @@
 
 <div id="announcement"></div>
 
-<div id="instructions">Move your finger / mouse to steer the core</div>
+<div id="instructions">
+  Move your finger / mouse to steer the core
+</div>
 
 <div id="overlay">
+
   <h1>CORE SHIFT</h1>
-  <p>Guide your energy core, collect fragments, chase combos. Every 60 seconds the rules flip.</p>
+
+  <p>
+    Guide your energy core, collect fragments, chase combos.
+    Every 60 seconds the rules flip.
+  </p>
+
   <div class="modes-list">
-    <div><b>VELOCITY</b> — the world only moves while you do. Grab shards before they decay.</div>
-    <div><b>INVERSION</b> — tap to flip gravity. Dodge hazards rising from below.</div>
-    <div><b>ECHO</b> — your recent path becomes a live wire. Don't cross your own trail.</div>
+
+    <div>
+      <b>VELOCITY</b> — the world only moves while you do.
+      Grab shards before they decay.
+    </div>
+
+    <div>
+      <b>INVERSION</b> — tap to flip gravity.
+      Dodge hazards rising from below.
+    </div>
+
+    <div>
+      <b>ECHO</b> — your recent path becomes a live wire.
+      Don't cross your own trail.
+    </div>
+
   </div>
+
   <button id="playBtn">Play</button>
+
   <div class="stat" id="finalScore" style="display:none;"></div>
+
 </div>
 
 <script>
 (function () {
+
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
-  let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  let W = 0;
+  let H = 0;
+  let DPR = Math.min(window.devicePixelRatio || 1, 2);
 
   function resize() {
-    W = window.innerWidth; H = window.innerHeight;
-    canvas.width = W * DPR; canvas.height = H * DPR;
-    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   }
+
   window.addEventListener('resize', resize);
-  window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+
+  window.addEventListener('orientationchange', () => {
+    setTimeout(resize, 200);
+  });
+
   resize();
 
-  function memGet(key) { return window.__coreShiftMem ? window.__coreShiftMem[key] : null; }
-  function memSet(key, val) { window.__coreShiftMem = window.__coreShiftMem || {}; window.__coreShiftMem[key] = val; }
+  function memGet(key) {
+    return window.__coreShiftMem
+      ? window.__coreShiftMem[key]
+      : null;
+  }
 
-  const MODES = ['velocity', 'inversion', 'echo'];
-  const MODE_LABELS = { velocity: 'VELOCITY', inversion: 'INVERSION', echo: 'ECHO' };
-  const MODE_COLORS = { velocity: '#7af4ff', inversion: '#ff2ea6', echo: '#b6ff4d' };
+  function memSet(key, val) {
+    window.__coreShiftMem =
+      window.__coreShiftMem || {};
+
+    window.__coreShiftMem[key] = val;
+  }
+
+  const MODES = [
+    'velocity',
+    'inversion',
+    'echo'
+  ];
+
+  const MODE_LABELS = {
+    velocity: 'VELOCITY',
+    inversion: 'INVERSION',
+    echo: 'ECHO'
+  };
+
+  const MODE_COLORS = {
+    velocity: '#7af4ff',
+    inversion: '#ff2ea6',
+    echo: '#b6ff4d'
+  };
+
   const MODE_DURATION = 60;
 
   const CORE_RADIUS = 16;
   const FRAG_RADIUS = 9;
   const HAZ_RADIUS = 15;
-  const STIFFNESS = 55, DAMPING = 11, MAX_V = 1400;
+
+  const STIFFNESS = 55;
+  const DAMPING = 11;
+  const MAX_V = 1400;
+
   const RESTITUTION = 0.55;
+
   const MOVE_IDLE_MS = 150;
   const COMBO_WINDOW = 1.1;
+
   const METER_DECAY = 6.5;
   const GRAVITY_ACCEL = 620;
+
   const HAZ_SPEED = 150;
   const FRAG_FALL_SPEED = 95;
+
   const ECHO_SAMPLE_INTERVAL = 0.5;
   const ECHO_MAX_POINTS = 5;
   const ECHO_MIN_AGE = 0.55;
@@ -189,504 +436,1138 @@
   const livesRow = document.getElementById('livesRow');
   const scoreVal = document.getElementById('scoreVal');
   const highVal = document.getElementById('highVal');
+
   const meterFill = document.getElementById('meterFill');
   const meterWrap = document.getElementById('meterWrap');
+
   const modeName = document.getElementById('modeName');
   const modeTimerEl = document.getElementById('modeTimer');
+
   const announcement = document.getElementById('announcement');
+
   const overlay = document.getElementById('overlay');
   const playBtn = document.getElementById('playBtn');
-  const finalScoreEl = document.getElementById('finalScore');
-  const instructions = document.getElementById('instructions');
 
-  let highScore = parseInt(memGet('coreShiftHigh') || '0', 10) || 0;
+  const finalScoreEl =
+    document.getElementById('finalScore');
+
+  const instructions =
+    document.getElementById('instructions');
+
+  let highScore =
+    parseInt(memGet('coreShiftHigh') || '0', 10) || 0;
+
   highVal.textContent = 'BEST ' + highScore;
 
   let running = false;
+
   let modeIndex = 0;
   let modeTimer = MODE_DURATION;
+
   let score = 0;
   let lives = 3;
+
   let combo = 0;
   let lastCollectTime = -999;
+
   let meter = 0;
-  let overdrive = false, overdriveTime = 0;
-  let shakeTime = 0, shakeMag = 0;
-  let flashColor = null, flashTime = 0;
+
+  let overdrive = false;
+  let overdriveTime = 0;
+
+  let shakeTime = 0;
+  let shakeMag = 0;
+
+  let flashColor = null;
+  let flashTime = 0;
+
   let announceTime = 0;
 
-  let player = { x: 0, y: 0, vx: 0, vy: 0, invuln: 0 };
-  let pointer = { x: 0, y: 0, active: false, lastMoveT: 0 };
+  let player = {
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    invuln: 0
+  };
+
+  let pointer = {
+    x: 0,
+    y: 0,
+    active: false,
+    lastMoveT: 0
+  };
+
   let pointerDownInfo = null;
 
   let fragments = [];
   let hazards = [];
   let echoTrail = [];
+
   let echoSampleTimer = 0;
 
   let velocityIsMoving = false;
   let velocityTimeScale = 0.05;
+
   let gravityDir = 1;
 
-  let spawnFragTimer = 0, spawnHazTimer = 0;
-  const clock = { last: performance.now() / 1000 };
+  let spawnFragTimer = 0;
+  let spawnHazTimer = 0;
 
-  function rand(a, b) { return a + Math.random() * (b - a); }
-  function dist(x1, y1, x2, y2) { return Math.hypot(x1 - x2, y1 - y2); }
+  const clock = {
+    last: performance.now() / 1000
+  };
+
+  function rand(a, b) {
+    return a + Math.random() * (b - a);
+  }
+
+  function dist(x1, y1, x2, y2) {
+    return Math.hypot(
+      x1 - x2,
+      y1 - y2
+    );
+  }
 
   function resetPlayer() {
-    player.x = W / 2; player.y = H / 2; player.vx = 0; player.vy = 0; player.invuln = 1.0;
-    pointer.x = player.x; pointer.y = player.y;
+
+    player.x = W / 2;
+    player.y = H / 2;
+
+    player.vx = 0;
+    player.vy = 0;
+
+    player.invuln = 1.0;
+
+    pointer.x = player.x;
+    pointer.y = player.y;
   }
 
   function updateLivesUI() {
+
     livesRow.innerHTML = '';
+
     for (let i = 0; i < 3; i++) {
+
       const d = document.createElement('div');
-      d.className = 'life-pip' + (i < lives ? '' : ' dead');
+
+      d.className =
+        'life-pip' +
+        (i < lives ? '' : ' dead');
+
       livesRow.appendChild(d);
     }
   }
 
   function setMeterUI() {
-    meterFill.style.width = Math.max(0, Math.min(100, meter)) + '%';
-    meterWrap.classList.toggle('overdrive', overdrive);
+
+    meterFill.style.width =
+      Math.max(0, Math.min(100, meter)) + '%';
+
+    meterWrap.classList.toggle(
+      'overdrive',
+      overdrive
+    );
   }
 
   function shake(mag, time) {
-    shakeMag = Math.max(shakeMag, mag);
-    shakeTime = Math.max(shakeTime, time || 0.25);
+
+    shakeMag =
+      Math.max(shakeMag, mag);
+
+    shakeTime =
+      Math.max(shakeTime, time || 0.25);
   }
 
   function flash(color, time) {
+
     flashColor = color;
     flashTime = time || 0.35;
   }
 
   function announce(text, color) {
+
     announcement.textContent = text;
     announcement.style.color = color;
+
     announceTime = 1.6;
   }
 
   function addFragment(mode) {
-    const f = { x: rand(40, W - 40), radius: FRAG_RADIUS, pulse: Math.random() * 10 };
+
+    const f = {
+      x: rand(40, W - 40),
+      radius: FRAG_RADIUS,
+      pulse: Math.random() * 10
+    };
+
     if (mode === 'velocity') {
+
       f.y = rand(80, H - 80);
+
       f.decay = rand(3.2, 5.2);
       f.decayMax = f.decay;
+
       f.vy = 0;
+
     } else {
+
       f.y = -20;
-      f.vy = FRAG_FALL_SPEED * rand(0.8, 1.3);
+
+      f.vy =
+        FRAG_FALL_SPEED *
+        rand(0.8, 1.3);
     }
+
     fragments.push(f);
   }
 
   function addHazard(mode) {
+
     if (mode === 'inversion') {
-      hazards.push({ x: rand(40, W - 40), y: H + 30, radius: HAZ_RADIUS, spin: rand(0, 10) });
+
+      hazards.push({
+        x: rand(40, W - 40),
+        y: H + 30,
+        radius: HAZ_RADIUS,
+        spin: rand(0, 10)
+      });
+
     } else if (mode === 'velocity') {
-      hazards.push({ x: rand(60, W - 60), y: rand(120, H - 120), radius: HAZ_RADIUS, static: true, spin: rand(0, 10) });
+
+      hazards.push({
+        x: rand(60, W - 60),
+        y: rand(120, H - 120),
+        radius: HAZ_RADIUS,
+        static: true,
+        spin: rand(0, 10)
+      });
     }
   }
 
   function clearField() {
+
     fragments = [];
     hazards = [];
     echoTrail = [];
   }
 
   function seedField(mode) {
+
     if (mode === 'velocity') {
-      for (let i = 0; i < 6; i++) addFragment('velocity');
-      for (let i = 0; i < 4; i++) addHazard('velocity');
+
+      for (let i = 0; i < 6; i++)
+        addFragment('velocity');
+
+      for (let i = 0; i < 4; i++)
+        addHazard('velocity');
+
     } else if (mode === 'inversion') {
-      for (let i = 0; i < 5; i++) addFragment('inversion');
-      for (let i = 0; i < 3; i++) addHazard('inversion');
+
+      for (let i = 0; i < 5; i++)
+        addFragment('inversion');
+
+      for (let i = 0; i < 3; i++)
+        addHazard('inversion');
+
     } else {
-      for (let i = 0; i < 6; i++) addFragment('echo');
+
+      for (let i = 0; i < 6; i++)
+        addFragment('echo');
     }
   }
 
   function hitPlayer(dmg) {
-    if (player.invuln > 0 || overdrive) return;
+
+    if (
+      player.invuln > 0 ||
+      overdrive
+    ) return;
+
     lives -= dmg;
+
     player.invuln = 1.0;
+
     combo = 0;
-    meter = Math.max(0, meter - 18);
+
+    meter =
+      Math.max(0, meter - 18);
+
     shake(10, 0.3);
-    flash('rgba(255,40,80,0.28)', 0.25);
+
+    flash(
+      'rgba(255,40,80,0.28)',
+      0.25
+    );
+
     updateLivesUI();
-    if (lives <= 0) gameOver();
+
+    if (lives <= 0)
+      gameOver();
   }
 
   function collectFragment(f, idx) {
+
     fragments.splice(idx, 1);
-    const now = performance.now() / 1000;
-    const gap = now - lastCollectTime;
+
+    const now =
+      performance.now() / 1000;
+
+    const gap =
+      now - lastCollectTime;
+
     lastCollectTime = now;
-    combo = gap < COMBO_WINDOW ? combo + 1 : 1;
-    const gain = 7 + Math.min(combo, 10) * 2.3;
-    meter = Math.min(100, meter + gain);
-    const mult = (overdrive ? 2 : 1) * Math.min(1 + combo * 0.12, 3);
-    score += Math.round(10 * mult);
+
+    combo =
+      gap < COMBO_WINDOW
+        ? combo + 1
+        : 1;
+
+    const gain =
+      7 +
+      Math.min(combo, 10) * 2.3;
+
+    meter =
+      Math.min(100, meter + gain);
+
+    const mult =
+      (overdrive ? 2 : 1) *
+      Math.min(
+        1 + combo * 0.12,
+        3
+      );
+
+    score +=
+      Math.round(10 * mult);
+
     scoreVal.textContent = score;
-    if (meter >= 100 && !overdrive) triggerOverdrive();
+
+    if (
+      meter >= 100 &&
+      !overdrive
+    ) {
+      triggerOverdrive();
+    }
   }
 
   function triggerOverdrive() {
+
     overdrive = true;
     overdriveTime = 4.0;
+
     meter = 60;
-    flash('rgba(255,210,63,0.22)', 0.4);
+
+    flash(
+      'rgba(255,210,63,0.22)',
+      0.4
+    );
   }
 
   function shiftMode() {
-    modeIndex = (modeIndex + 1) % MODES.length;
+
+    modeIndex =
+      (modeIndex + 1) % MODES.length;
+
     modeTimer = MODE_DURATION;
-    const mode = MODES[modeIndex];
-    modeName.textContent = MODE_LABELS[mode];
-    modeName.style.color = MODE_COLORS[mode];
+
+    const mode =
+      MODES[modeIndex];
+
+    modeName.textContent =
+      MODE_LABELS[mode];
+
+    modeName.style.color =
+      MODE_COLORS[mode];
+
     clearField();
     seedField(mode);
+
     player.invuln = 1.2;
+
     gravityDir = 1;
+
     shake(16, 0.5);
-    flash('rgba(255,255,255,0.35)', 0.3);
-    announce('MODE SHIFT: ' + MODE_LABELS[mode], MODE_COLORS[mode]);
+
+    flash(
+      'rgba(255,255,255,0.35)',
+      0.3
+    );
+
+    announce(
+      'MODE SHIFT: ' +
+      MODE_LABELS[mode],
+      MODE_COLORS[mode]
+    );
   }
 
   function gameOver() {
+
     running = false;
+
     if (score > highScore) {
+
       highScore = score;
-      memSet('coreShiftHigh', String(highScore));
+
+      memSet(
+        'coreShiftHigh',
+        String(highScore)
+      );
     }
-    highVal.textContent = 'BEST ' + highScore;
-    finalScoreEl.style.display = 'block';
-    finalScoreEl.textContent = 'Score: ' + score + (score >= highScore ? '  —  New best!' : '');
-    document.getElementById('overlay').querySelector('h1').textContent = 'CORE LOST';
-    document.querySelector('#overlay p').style.display = 'none';
-    document.querySelector('#overlay .modes-list').style.display = 'none';
-    playBtn.textContent = 'Restart';
+
+    highVal.textContent =
+      'BEST ' + highScore;
+
+    finalScoreEl.style.display =
+      'block';
+
+    finalScoreEl.textContent =
+      'Score: ' +
+      score +
+      (
+        score >= highScore
+          ? '  —  New best!'
+          : ''
+      );
+
+    overlay
+      .querySelector('h1')
+      .textContent =
+      'CORE LOST';
+
+    document
+      .querySelector('#overlay p')
+      .style.display =
+      'none';
+
+    document
+      .querySelector('#overlay .modes-list')
+      .style.display =
+      'none';
+
+    playBtn.textContent =
+      'Restart';
+
     instructions.style.opacity = 0;
-    setTimeout(() => { overlay.style.display = 'flex'; }, 240);
+
+    setTimeout(() => {
+
+      overlay.style.display =
+        'flex';
+
+    }, 240);
   }
 
   function startGame() {
+
     running = true;
+
     modeIndex = 0;
     modeTimer = MODE_DURATION;
+
     score = 0;
     lives = 3;
+
     combo = 0;
     meter = 0;
+
     overdrive = false;
     overdriveTime = 0;
+
     scoreVal.textContent = '0';
-    modeName.textContent = MODE_LABELS[MODES[0]];
-    modeName.style.color = MODE_COLORS[MODES[0]];
+
+    modeName.textContent =
+      MODE_LABELS[MODES[0]];
+
+    modeName.style.color =
+      MODE_COLORS[MODES[0]];
+
     updateLivesUI();
     setMeterUI();
+
     resetPlayer();
+
     clearField();
+
     seedField(MODES[0]);
+
     overlay.style.display = 'none';
-    instructions.style.opacity = 0.55;
-    document.querySelector('#overlay p').style.display = '';
-    document.querySelector('#overlay .modes-list').style.display = '';
-    finalScoreEl.style.display = 'none';
-    announce('GO', '#7af4ff');
+
+    instructions.style.opacity =
+      0.55;
+
+    document
+      .querySelector('#overlay p')
+      .style.display = '';
+
+    document
+      .querySelector('#overlay .modes-list')
+      .style.display = '';
+
+    finalScoreEl.style.display =
+      'none';
+
+    announce(
+      'GO',
+      '#7af4ff'
+    );
   }
 
-  playBtn.addEventListener('click', startGame);
+  playBtn.addEventListener(
+    'click',
+    startGame
+  );
 
   function setPointer(x, y) {
+
     pointer.x = x;
     pointer.y = y;
-    pointer.lastMoveT = performance.now() / 1000;
+
+    pointer.lastMoveT =
+      performance.now() / 1000;
   }
 
-  canvas.addEventListener('pointerdown', (e) => {
-    pointerDownInfo = {
-      x: e.clientX,
-      y: e.clientY,
-      t: performance.now() / 1000
-    };
-    setPointer(e.clientX, e.clientY);
-  });
+  canvas.addEventListener(
+    'pointerdown',
+    (e) => {
 
-  canvas.addEventListener('pointermove', (e) => {
-    setPointer(e.clientX, e.clientY);
-  });
+      pointerDownInfo = {
+        x: e.clientX,
+        y: e.clientY,
+        t: performance.now() / 1000
+      };
 
-  canvas.addEventListener('pointerup', (e) => {
-    if (!running || !pointerDownInfo) {
-      pointerDownInfo = null;
-      return;
+      setPointer(
+        e.clientX,
+        e.clientY
+      );
     }
+  );
 
-    const dx = e.clientX - pointerDownInfo.x;
-    const dy = e.clientY - pointerDownInfo.y;
-    const dt = performance.now() / 1000 - pointerDownInfo.t;
+  canvas.addEventListener(
+    'pointermove',
+    (e) => {
 
-    if (Math.hypot(dx, dy) < 14 && dt < 0.35) {
-      if (MODES[modeIndex] === 'inversion') {
-        gravityDir *= -1;
-        player.vy = gravityDir * -260;
-        shake(4, 0.12);
+      setPointer(
+        e.clientX,
+        e.clientY
+      );
+    }
+  );
+
+  canvas.addEventListener(
+    'pointerup',
+    (e) => {
+
+      if (
+        !running ||
+        !pointerDownInfo
+      ) {
+
+        pointerDownInfo = null;
+        return;
       }
-    }
 
-    pointerDownInfo = null;
-  });
+      const dx =
+        e.clientX -
+        pointerDownInfo.x;
+
+      const dy =
+        e.clientY -
+        pointerDownInfo.y;
+
+      const dt =
+        performance.now() / 1000 -
+        pointerDownInfo.t;
+
+      if (
+        Math.hypot(dx, dy) < 14 &&
+        dt < 0.35
+      ) {
+
+        if (
+          MODES[modeIndex] ===
+          'inversion'
+        ) {
+
+          gravityDir *= -1;
+
+          player.vy =
+            gravityDir * -260;
+
+          shake(4, 0.12);
+        }
+      }
+
+      pointerDownInfo = null;
+    }
+  );
 
   const keys = {};
 
-  window.addEventListener('keydown', (e) => {
-    keys[e.key] = true;
-  });
+  window.addEventListener(
+    'keydown',
+    (e) => {
+      keys[e.key] = true;
+    }
+  );
 
-  window.addEventListener('keyup', (e) => {
-    keys[e.key] = false;
-  });
+  window.addEventListener(
+    'keyup',
+    (e) => {
+      keys[e.key] = false;
+    }
+  );
 
   function update(dt) {
-    if (shakeTime > 0) shakeTime = Math.max(0, shakeTime - dt);
-    if (flashTime > 0) flashTime = Math.max(0, flashTime - dt);
+
+    if (shakeTime > 0)
+      shakeTime =
+        Math.max(
+          0,
+          shakeTime - dt
+        );
+
+    if (flashTime > 0)
+      flashTime =
+        Math.max(
+          0,
+          flashTime - dt
+        );
 
     if (announceTime > 0) {
-      announceTime = Math.max(0, announceTime - dt);
-      announcement.style.opacity = Math.min(
-        1,
-        announceTime / 0.3,
-        (1.6 - announceTime) / 0.3
-      );
+
+      announceTime =
+        Math.max(
+          0,
+          announceTime - dt
+        );
+
+      announcement.style.opacity =
+        Math.min(
+          1,
+          announceTime / 0.3,
+          (1.6 - announceTime) / 0.3
+        );
+
     } else {
-      announcement.style.opacity = 0;
+
+      announcement.style.opacity =
+        0;
     }
 
-    if (!running) return;
+    if (!running)
+      return;
 
     modeTimer -= dt;
 
-    if (modeTimer <= 0) shiftMode();
+    if (modeTimer <= 0)
+      shiftMode();
 
     modeTimerEl.textContent =
       '0:' +
-      String(Math.max(0, Math.ceil(modeTimer))).padStart(2, '0') +
+      String(
+        Math.max(
+          0,
+          Math.ceil(modeTimer)
+        )
+      ).padStart(2, '0') +
       ' to shift';
 
     if (player.invuln > 0) {
-      player.invuln = Math.max(0, player.invuln - dt);
+
+      player.invuln =
+        Math.max(
+          0,
+          player.invuln - dt
+        );
     }
 
-    const mode = MODES[modeIndex];
+    const mode =
+      MODES[modeIndex];
 
-    const kSpeed = 480 * dt;
+    const kSpeed =
+      480 * dt;
 
-    if (keys['ArrowLeft'] || keys['a'] || keys['A']) pointer.x -= kSpeed;
-    if (keys['ArrowRight'] || keys['d'] || keys['D']) pointer.x += kSpeed;
+    if (
+      keys['ArrowLeft'] ||
+      keys['a'] ||
+      keys['A']
+    )
+      pointer.x -= kSpeed;
+
+    if (
+      keys['ArrowRight'] ||
+      keys['d'] ||
+      keys['D']
+    )
+      pointer.x += kSpeed;
 
     if (mode !== 'inversion') {
-      if (keys['ArrowUp'] || keys['w'] || keys['W']) pointer.y -= kSpeed;
-      if (keys['ArrowDown'] || keys['s'] || keys['S']) pointer.y += kSpeed;
+
+      if (
+        keys['ArrowUp'] ||
+        keys['w'] ||
+        keys['W']
+      )
+        pointer.y -= kSpeed;
+
+      if (
+        keys['ArrowDown'] ||
+        keys['s'] ||
+        keys['S']
+      )
+        pointer.y += kSpeed;
     }
 
-    pointer.x = Math.max(0, Math.min(W, pointer.x));
-    pointer.y = Math.max(0, Math.min(H, pointer.y));
-
-    const ax =
-      (pointer.x - player.x) * STIFFNESS -
-      player.vx * DAMPING;
-
-    player.vx = Math.max(
-      -MAX_V,
-      Math.min(MAX_V, player.vx + ax * dt)
-    );
-
-    player.x += player.vx * dt;
-
-    if (mode === 'inversion') {
-      player.vy += gravityDir * GRAVITY_ACCEL * dt;
-      player.vy = Math.max(-MAX_V, Math.min(MAX_V, player.vy));
-      player.y += player.vy * dt;
-    } else {
-      const ay =
-        (pointer.y - player.y) * STIFFNESS -
-        player.vy * DAMPING;
-
-      player.vy = Math.max(
-        -MAX_V,
-        Math.min(MAX_V, player.vy + ay * dt)
+    pointer.x =
+      Math.max(
+        0,
+        Math.min(W, pointer.x)
       );
 
-      player.y += player.vy * dt;
+    pointer.y =
+      Math.max(
+        0,
+        Math.min(H, pointer.y)
+      );
+
+    const ax =
+      (pointer.x - player.x) *
+      STIFFNESS -
+      player.vx * DAMPING;
+
+    player.vx =
+      Math.max(
+        -MAX_V,
+        Math.min(
+          MAX_V,
+          player.vx + ax * dt
+        )
+      );
+
+    player.x +=
+      player.vx * dt;
+
+    if (mode === 'inversion') {
+
+      player.vy +=
+        gravityDir *
+        GRAVITY_ACCEL *
+        dt;
+
+      player.vy =
+        Math.max(
+          -MAX_V,
+          Math.min(
+            MAX_V,
+            player.vy
+          )
+        );
+
+      player.y +=
+        player.vy * dt;
+
+    } else {
+
+      const ay =
+        (pointer.y - player.y) *
+        STIFFNESS -
+        player.vy * DAMPING;
+
+      player.vy =
+        Math.max(
+          -MAX_V,
+          Math.min(
+            MAX_V,
+            player.vy + ay * dt
+          )
+        );
+
+      player.y +=
+        player.vy * dt;
     }
 
-    if (player.x < CORE_RADIUS) {
-      player.x = CORE_RADIUS;
-      player.vx = Math.abs(player.vx) * RESTITUTION;
+    if (
+      player.x <
+      CORE_RADIUS
+    ) {
+
+      player.x =
+        CORE_RADIUS;
+
+      player.vx =
+        Math.abs(
+          player.vx
+        ) *
+        RESTITUTION;
     }
 
-    if (player.x > W - CORE_RADIUS) {
-      player.x = W - CORE_RADIUS;
-      player.vx = -Math.abs(player.vx) * RESTITUTION;
+    if (
+      player.x >
+      W - CORE_RADIUS
+    ) {
+
+      player.x =
+        W - CORE_RADIUS;
+
+      player.vx =
+        -Math.abs(
+          player.vx
+        ) *
+        RESTITUTION;
     }
 
-    if (player.y < CORE_RADIUS + 70) {
-      player.y = CORE_RADIUS + 70;
-      player.vy = Math.abs(player.vy) * RESTITUTION;
+    if (
+      player.y <
+      CORE_RADIUS + 70
+    ) {
+
+      player.y =
+        CORE_RADIUS + 70;
+
+      player.vy =
+        Math.abs(
+          player.vy
+        ) *
+        RESTITUTION;
     }
 
-    if (player.y > H - CORE_RADIUS) {
-      player.y = H - CORE_RADIUS;
-      player.vy = -Math.abs(player.vy) * RESTITUTION;
+    if (
+      player.y >
+      H - CORE_RADIUS
+    ) {
+
+      player.y =
+        H - CORE_RADIUS;
+
+      player.vy =
+        -Math.abs(
+          player.vy
+        ) *
+        RESTITUTION;
     }
 
     if (mode === 'velocity') {
-      const now = performance.now() / 1000;
+
+      const now =
+        performance.now() / 1000;
 
       velocityIsMoving =
-        (now - pointer.lastMoveT) <
-        (MOVE_IDLE_MS / 1000);
+        (
+          now -
+          pointer.lastMoveT
+        ) <
+        (
+          MOVE_IDLE_MS / 1000
+        );
 
       const targetScale =
-        velocityIsMoving ? 1 : 0.045;
+        velocityIsMoving
+          ? 1
+          : 0.045;
 
       velocityTimeScale +=
-        (targetScale - velocityTimeScale) *
-        Math.min(dt * 9, 1);
+        (
+          targetScale -
+          velocityTimeScale
+        ) *
+        Math.min(
+          dt * 9,
+          1
+        );
 
-      for (let i = fragments.length - 1; i >= 0; i--) {
-        const f = fragments[i];
+      for (
+        let i = fragments.length - 1;
+        i >= 0;
+        i--
+      ) {
 
-        f.decay -= dt * velocityTimeScale;
-        f.pulse += dt * 4;
+        const f =
+          fragments[i];
+
+        f.decay -=
+          dt *
+          velocityTimeScale;
+
+        f.pulse +=
+          dt * 4;
 
         if (f.decay <= 0) {
+
           fragments.splice(i, 1);
+
           combo = 0;
-          meter = Math.max(0, meter - 6);
+
+          meter =
+            Math.max(
+              0,
+              meter - 6
+            );
+
           continue;
         }
 
         if (
-          dist(f.x, f.y, player.x, player.y) <
-          f.radius + CORE_RADIUS
+          dist(
+            f.x,
+            f.y,
+            player.x,
+            player.y
+          ) <
+          f.radius +
+          CORE_RADIUS
         ) {
-          collectFragment(f, i);
+
+          collectFragment(
+            f,
+            i
+          );
         }
       }
 
-      hazards.forEach(h => h.spin += dt * 2);
+      hazards.forEach(
+        h => h.spin += dt * 2
+      );
 
-      hazards.forEach(h => {
-        if (
-          dist(h.x, h.y, player.x, player.y) <
-          h.radius + CORE_RADIUS
-        ) {
-          hitPlayer(1);
+      hazards.forEach(
+        h => {
+
+          if (
+            dist(
+              h.x,
+              h.y,
+              player.x,
+              player.y
+            ) <
+            h.radius +
+            CORE_RADIUS
+          ) {
+
+            hitPlayer(1);
+          }
         }
-      });
+      );
 
       spawnFragTimer -= dt;
 
-      if (spawnFragTimer <= 0 && fragments.length < 7) {
-        addFragment('velocity');
-        spawnFragTimer = rand(0.5, 1.1);
+      if (
+        spawnFragTimer <= 0 &&
+        fragments.length < 7
+      ) {
+
+        addFragment(
+          'velocity'
+        );
+
+        spawnFragTimer =
+          rand(0.5, 1.1);
       }
     }
 
-    else if (mode === 'inversion') {
-      for (let i = fragments.length - 1; i >= 0; i--) {
-        const f = fragments[i];
+    else if (
+      mode === 'inversion'
+    ) {
 
-        f.y += f.vy * dt;
-        f.pulse += dt * 4;
+      for (
+        let i = fragments.length - 1;
+        i >= 0;
+        i--
+      ) {
 
-        if (f.y > H + 30) {
-          fragments.splice(i, 1);
+        const f =
+          fragments[i];
+
+        f.y +=
+          f.vy * dt;
+
+        f.pulse +=
+          dt * 4;
+
+        if (
+          f.y >
+          H + 30
+        ) {
+
+          fragments.splice(
+            i,
+            1
+          );
+
           continue;
         }
 
         if (
-          dist(f.x, f.y, player.x, player.y) <
-          f.radius + CORE_RADIUS
+          dist(
+            f.x,
+            f.y,
+            player.x,
+            player.y
+          ) <
+          f.radius +
+          CORE_RADIUS
         ) {
-          collectFragment(f, i);
+
+          collectFragment(
+            f,
+            i
+          );
         }
       }
 
-      for (let i = hazards.length - 1; i >= 0; i--) {
-        const h = hazards[i];
+      for (
+        let i = hazards.length - 1;
+        i >= 0;
+        i--
+      ) {
 
-        h.y -= HAZ_SPEED * dt;
-        h.spin += dt * 3;
+        const h =
+          hazards[i];
 
-        if (h.y < -30) {
-          h.x = rand(40, W - 40);
-          h.y = H + rand(0, 200);
+        h.y -=
+          HAZ_SPEED * dt;
+
+        h.spin +=
+          dt * 3;
+
+        if (
+          h.y < -30
+        ) {
+
+          h.x =
+            rand(
+              40,
+              W - 40
+            );
+
+          h.y =
+            H +
+            rand(0, 200);
+
           continue;
         }
 
         if (
-          dist(h.x, h.y, player.x, player.y) <
-          h.radius + CORE_RADIUS
+          dist(
+            h.x,
+            h.y,
+            player.x,
+            player.y
+          ) <
+          h.radius +
+          CORE_RADIUS
         ) {
+
           hitPlayer(1);
         }
       }
 
       spawnFragTimer -= dt;
 
-      if (spawnFragTimer <= 0 && fragments.length < 6) {
-        addFragment('inversion');
-        spawnFragTimer = rand(0.6, 1.2);
+      if (
+        spawnFragTimer <= 0 &&
+        fragments.length < 6
+      ) {
+
+        addFragment(
+          'inversion'
+        );
+
+        spawnFragTimer =
+          rand(0.6, 1.2);
       }
 
       spawnHazTimer -= dt;
 
-      if (spawnHazTimer <= 0 && hazards.length < 5) {
-        addHazard('inversion');
-        spawnHazTimer = rand(0.9, 1.6);
+      if (
+        spawnHazTimer <= 0 &&
+        hazards.length < 5
+      ) {
+
+        addHazard(
+          'inversion'
+        );
+
+        spawnHazTimer =
+          rand(0.9, 1.6);
       }
     }
 
-    else if (mode === 'echo') {
-      for (let i = fragments.length - 1; i >= 0; i--) {
-        const f = fragments[i];
+    else if (
+      mode === 'echo'
+    ) {
 
-        f.y += f.vy * dt;
-        f.pulse += dt * 4;
+      for (
+        let i = fragments.length - 1;
+        i >= 0;
+        i--
+      ) {
 
-        if (f.y > H + 30) {
-          fragments.splice(i, 1);
+        const f =
+          fragments[i];
+
+        f.y +=
+          f.vy * dt;
+
+        f.pulse +=
+          dt * 4;
+
+        if (
+          f.y >
+          H + 30
+        ) {
+
+          fragments.splice(
+            i,
+            1
+          );
+
           continue;
         }
 
         if (
-          dist(f.x, f.y, player.x, player.y) <
-          f.radius + CORE_RADIUS
+          dist(
+            f.x,
+            f.y,
+            player.x,
+            player.y
+          ) <
+          f.radius +
+          CORE_RADIUS
         ) {
-          collectFragment(f, i);
+
+          collectFragment(
+            f,
+            i
+          );
         }
       }
 
       spawnFragTimer -= dt;
 
-      if (spawnFragTimer <= 0 && fragments.length < 7) {
-        addFragment('echo');
-        spawnFragTimer = rand(0.5, 1.0);
+      if (
+        spawnFragTimer <= 0 &&
+        fragments.length < 7
+      ) {
+
+        addFragment(
+          'echo'
+        );
+
+        spawnFragTimer =
+          rand(0.5, 1.0);
       }
 
-      const now = performance.now() / 1000;
+      const now =
+        performance.now() / 1000;
 
       echoSampleTimer -= dt;
 
-      if (echoSampleTimer <= 0) {
-        echoSampleTimer = ECHO_SAMPLE_INTERVAL;
+      if (
+        echoSampleTimer <= 0
+      ) {
+
+        echoSampleTimer =
+          ECHO_SAMPLE_INTERVAL;
 
         echoTrail.push({
           x: player.x,
@@ -694,56 +1575,106 @@
           t: now
         });
 
-        if (echoTrail.length > ECHO_MAX_POINTS) {
+        if (
+          echoTrail.length >
+          ECHO_MAX_POINTS
+        ) {
+
           echoTrail.shift();
         }
       }
 
-      for (let i = 0; i < echoTrail.length - 1; i++) {
-        const a = echoTrail[i];
-        const b = echoTrail[i + 1];
+      for (
+        let i = 0;
+        i <
+        echoTrail.length - 1;
+        i++
+      ) {
 
-        if (now - b.t < ECHO_MIN_AGE) continue;
+        const a =
+          echoTrail[i];
+
+        const b =
+          echoTrail[i + 1];
 
         if (
-          segPointDist(a, b, player) <
-          ECHO_HIT_RADIUS + CORE_RADIUS * 0.4
+          now - b.t <
+          ECHO_MIN_AGE
+        )
+          continue;
+
+        if (
+          segPointDist(
+            a,
+            b,
+            player
+          ) <
+          ECHO_HIT_RADIUS +
+          CORE_RADIUS * 0.4
         ) {
+
           hitPlayer(1);
+
           break;
         }
       }
     }
 
     if (overdrive) {
+
       overdriveTime -= dt;
 
-      if (overdriveTime <= 0) {
+      if (
+        overdriveTime <= 0
+      ) {
+
         overdrive = false;
       }
+
     } else {
-      meter = Math.max(
-        0,
-        meter - METER_DECAY * dt
-      );
+
+      meter =
+        Math.max(
+          0,
+          meter -
+          METER_DECAY * dt
+        );
     }
 
     setMeterUI();
   }
 
   function segPointDist(a, b, p) {
-    const abx = b.x - a.x;
-    const aby = b.y - a.y;
-    const len2 = abx * abx + aby * aby || 1;
+
+    const abx =
+      b.x - a.x;
+
+    const aby =
+      b.y - a.y;
+
+    const len2 =
+      abx * abx +
+      aby * aby ||
+      1;
 
     let t =
-      ((p.x - a.x) * abx +
-       (p.y - a.y) * aby) / len2;
+      (
+        (p.x - a.x) * abx +
+        (p.y - a.y) * aby
+      ) /
+      len2;
 
-    t = Math.max(0, Math.min(1, t));
+    t =
+      Math.max(
+        0,
+        Math.min(1, t)
+      );
 
-    const cx = a.x + abx * t;
-    const cy = a.y + aby * t;
+    const cx =
+      a.x + abx * t;
+
+    const cy =
+      a.y + aby * t;
 
     return Math.hypot(
       p.x - cx,
@@ -754,18 +1685,29 @@
   let gridOffset = 0;
 
   function render(dt) {
-    ctx.clearRect(0, 0, W, H);
+
+    ctx.clearRect(
+      0,
+      0,
+      W,
+      H
+    );
 
     const mode =
-      running ? MODES[modeIndex] : 'velocity';
+      running
+        ? MODES[modeIndex]
+        : 'velocity';
 
-    const accent = MODE_COLORS[mode];
+    const accent =
+      MODE_COLORS[mode];
 
     ctx.save();
 
     if (shakeTime > 0) {
+
       const m =
-        shakeMag * (shakeTime / 0.5);
+        shakeMag *
+        (shakeTime / 0.5);
 
       ctx.translate(
         (Math.random() - 0.5) * m,
@@ -783,17 +1725,36 @@
         Math.max(W, H) * 0.75
       );
 
-    grad.addColorStop(0, '#0c0616');
-    grad.addColorStop(1, '#03010a');
+    grad.addColorStop(
+      0,
+      '#0c0616'
+    );
+
+    grad.addColorStop(
+      1,
+      '#03010a'
+    );
 
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillRect(
+      0,
+      0,
+      W,
+      H
+    );
 
     gridOffset =
-      (gridOffset + dt * 40) % 40;
+      (
+        gridOffset +
+        dt * 40
+      ) % 40;
 
     ctx.strokeStyle =
-      hexAlpha(accent, 0.08);
+      hexAlpha(
+        accent,
+        0.08
+      );
 
     ctx.lineWidth = 1;
 
@@ -802,9 +1763,19 @@
       x < W + 40;
       x += 40
     ) {
+
       ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, H);
+
+      ctx.moveTo(
+        x,
+        0
+      );
+
+      ctx.lineTo(
+        x,
+        H
+      );
+
       ctx.stroke();
     }
 
@@ -813,17 +1784,29 @@
       y < H + 40;
       y += 40
     ) {
+
       ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(W, y);
+
+      ctx.moveTo(
+        0,
+        y
+      );
+
+      ctx.lineTo(
+        W,
+        y
+      );
+
       ctx.stroke();
     }
 
     if (running) {
+
       if (
         mode === 'echo' &&
         echoTrail.length > 1
       ) {
+
         const now =
           performance.now() / 1000;
 
@@ -832,26 +1815,48 @@
           i < echoTrail.length - 1;
           i++
         ) {
-          const a = echoTrail[i];
-          const b = echoTrail[i + 1];
 
-          const age = now - b.t;
+          const a =
+            echoTrail[i];
+
+          const b =
+            echoTrail[i + 1];
+
+          const age =
+            now - b.t;
+
           const danger =
             age >= ECHO_MIN_AGE;
 
           ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
+
+          ctx.moveTo(
+            a.x,
+            a.y
+          );
+
+          ctx.lineTo(
+            b.x,
+            b.y
+          );
 
           ctx.strokeStyle =
             danger
-              ? hexAlpha('#b6ff4d', 0.85)
-              : hexAlpha('#b6ff4d', 0.25);
+              ? hexAlpha(
+                  '#b6ff4d',
+                  0.85
+                )
+              : hexAlpha(
+                  '#b6ff4d',
+                  0.25
+                );
 
           ctx.lineWidth =
             danger ? 5 : 3;
 
-          ctx.shadowColor = '#b6ff4d';
+          ctx.shadowColor =
+            '#b6ff4d';
+
           ctx.shadowBlur =
             danger ? 18 : 6;
 
@@ -862,32 +1867,59 @@
       }
 
       hazards.forEach(h => {
+
         ctx.save();
 
-        ctx.translate(h.x, h.y);
-        ctx.rotate(h.spin);
+        ctx.translate(
+          h.x,
+          h.y
+        );
 
-        ctx.shadowColor = '#ff2ea6';
+        ctx.rotate(
+          h.spin
+        );
+
+        ctx.shadowColor =
+          '#ff2ea6';
+
         ctx.shadowBlur = 16;
-        ctx.fillStyle = '#ff2ea6';
 
-        drawSpike(ctx, h.radius);
+        ctx.fillStyle =
+          '#ff2ea6';
+
+        drawSpike(
+          ctx,
+          h.radius
+        );
 
         ctx.restore();
       });
 
       fragments.forEach(f => {
+
         const pulse =
-          1 + Math.sin(f.pulse) * 0.15;
+          1 +
+          Math.sin(f.pulse) *
+          0.15;
 
         ctx.save();
 
-        ctx.translate(f.x, f.y);
-        ctx.rotate(f.pulse * 0.3);
+        ctx.translate(
+          f.x,
+          f.y
+        );
 
-        ctx.shadowColor = accent;
+        ctx.rotate(
+          f.pulse * 0.3
+        );
+
+        ctx.shadowColor =
+          accent;
+
         ctx.shadowBlur = 14;
-        ctx.fillStyle = accent;
+
+        ctx.fillStyle =
+          accent;
 
         drawDiamond(
           ctx,
@@ -896,11 +1928,15 @@
 
         ctx.restore();
 
-        if (mode === 'velocity') {
+        if (
+          mode === 'velocity'
+        ) {
+
           const frac =
             Math.max(
               0,
-              f.decay / f.decayMax
+              f.decay /
+              f.decayMax
             );
 
           ctx.beginPath();
@@ -911,25 +1947,34 @@
             f.radius + 6,
             -Math.PI / 2,
             -Math.PI / 2 +
-              frac * Math.PI * 2
+            frac *
+            Math.PI *
+            2
           );
 
           ctx.strokeStyle =
-            hexAlpha('#ffffff', 0.55);
+            hexAlpha(
+              '#ffffff',
+              0.55
+            );
 
           ctx.lineWidth = 2;
+
           ctx.stroke();
         }
       });
 
       const flicker =
         player.invuln > 0
-          ? (Math.floor(
-              player.invuln * 20
-            ) % 2 === 0)
+          ? (
+              Math.floor(
+                player.invuln * 20
+              ) % 2 === 0
+            )
           : true;
 
       if (flicker) {
+
         ctx.save();
 
         ctx.translate(
@@ -942,12 +1987,16 @@
             ? '#ffd23f'
             : accent;
 
-        ctx.shadowColor = glowColor;
+        ctx.shadowColor =
+          glowColor;
 
         ctx.shadowBlur =
-          overdrive ? 30 : 20;
+          overdrive
+            ? 30
+            : 20;
 
-        ctx.fillStyle = glowColor;
+        ctx.fillStyle =
+          glowColor;
 
         ctx.beginPath();
 
@@ -984,7 +2033,11 @@
 
     ctx.restore();
 
-    if (flashTime > 0 && flashColor) {
+    if (
+      flashTime > 0 &&
+      flashColor
+    ) {
+
       ctx.fillStyle =
         flashColor.replace(
           /[\d.]+\)$/,
@@ -992,7 +2045,8 @@
             flashTime /
             0.35 *
             0.35
-          ).toFixed(2) + ')'
+          ).toFixed(2) +
+          ')'
         );
 
       ctx.fillRect(
@@ -1005,23 +2059,50 @@
   }
 
   function drawDiamond(c, r) {
+
     c.beginPath();
 
-    c.moveTo(0, -r);
-    c.lineTo(r, 0);
-    c.lineTo(0, r);
-    c.lineTo(-r, 0);
+    c.moveTo(
+      0,
+      -r
+    );
+
+    c.lineTo(
+      r,
+      0
+    );
+
+    c.lineTo(
+      0,
+      r
+    );
+
+    c.lineTo(
+      -r,
+      0
+    );
 
     c.closePath();
+
     c.fill();
   }
 
   function drawSpike(c, r) {
+
     c.beginPath();
 
-    for (let i = 0; i < 8; i++) {
+    for (
+      let i = 0;
+      i < 8;
+      i++
+    ) {
+
       const a =
-        (i / 8) * Math.PI * 2;
+        (
+          i / 8
+        ) *
+        Math.PI *
+        2;
 
       const rad =
         i % 2 === 0
@@ -1034,18 +2115,19 @@
       const y =
         Math.sin(a) * rad;
 
-      if (i === 0) {
+      if (i === 0)
         c.moveTo(x, y);
-      } else {
+      else
         c.lineTo(x, y);
-      }
     }
 
     c.closePath();
+
     c.fill();
   }
 
   function hexAlpha(hex, a) {
+
     const h =
       hex.replace('#', '');
 
@@ -1071,6 +2153,7 @@
   }
 
   function loop() {
+
     requestAnimationFrame(loop);
 
     const now =
@@ -1091,20 +2174,27 @@
   updateLivesUI();
   setMeterUI();
   resetPlayer();
+
   loop();
+
 })();
 </script>
 
-<!-- PWA Service Worker -->
+<!-- Service Worker Registration -->
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('./sw.js')
       .then(function () {
-        console.log('CORE-SHIFT Service Worker registered');
+        console.log(
+          'CORE-SHIFT Service Worker registered successfully'
+        );
       })
       .catch(function (error) {
-        console.error('Service Worker registration failed:', error);
+        console.error(
+          'CORE-SHIFT Service Worker registration failed:',
+          error
+        );
       });
   });
 }
@@ -1112,4 +2202,3 @@ if ('serviceWorker' in navigator) {
 
 </body>
 </html>
-```
