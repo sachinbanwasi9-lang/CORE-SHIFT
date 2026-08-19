@@ -68,6 +68,13 @@
       "type": "image/png",
       "form_factor": "wide",
       "label": "CORE-SHIFT game over screen"
+    },
+    {
+      "src": "./screenshot-mobile.png",
+      "sizes": "975x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "CORE-SHIFT mobile gameplay"
     }
   ]
 }
