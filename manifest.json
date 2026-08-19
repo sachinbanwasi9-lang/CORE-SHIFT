@@ -11,20 +11,15 @@
   "orientation": "portrait",
   "background_color": "#05020a",
   "theme_color": "#05020a",
-  "categories": ["games"],
-  "prefer_related_applications": false,
+  "categories": [
+    "games"
+  ],
   "icons": [
     {
       "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
@@ -33,6 +28,36 @@
       "short_name": "Play",
       "description": "Start CORE-SHIFT",
       "url": "./"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshot-1.png",
+      "sizes": "1219x822",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CORE-SHIFT start screen"
+    },
+    {
+      "src": "./screenshot-2.png",
+      "sizes": "1267x850",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CORE-SHIFT gameplay"
+    },
+    {
+      "src": "./screenshot-3.png",
+      "sizes": "1267x848",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CORE-SHIFT inversion gameplay"
+    },
+    {
+      "src": "./screenshot-4.png",
+      "sizes": "1270x845",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "CORE-SHIFT game over screen"
     }
   ]
 }
